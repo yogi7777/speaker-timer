@@ -8,7 +8,7 @@
 
 # Speaker Timer
 ## A simple timer for presentations. 
-### (Or other applications).
+>(Or other applications).
 
 - Set timer in minutes, seconds 
 - Timer at 0:00, color changes to red and timer runs up.
