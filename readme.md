@@ -1,4 +1,6 @@
 # Speaker Timer
+> Show Demo at: https://itcrm.ch/timer/
+
 ## Ein einfacher Timer für Vorträge. 
 >(Oder andere Anwendungen).
 
@@ -14,6 +16,5 @@
 - Timer at 0:00, color changes to red and timer runs up.
 - CSP, sanitizeInput, encodeURIComponent, DOM, XSS protection built in.
 
-> Show Demo at: https://itcrm.ch/timer/
 
 **Author:** yogi7777
