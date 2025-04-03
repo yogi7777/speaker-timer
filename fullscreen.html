@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <title>Speaker Timer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-mode">
+    <div id="timer"></div>
+    <button id="resetBtn" class="reset-button">Zurück</button>
+
+    <script>
+        // Sicherer Zugriff auf URL-Parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const sanitizeInput = (value) => {
+            const num = parseInt(value, 10);
+            return isNaN(num) || num < 0 ? 0 : num;
+        };
+
+        // Initiale Werte bereinigen
+        let mins = sanitizeInput(urlParams.get('mins'));
+        let secs = sanitizeInput(urlParams.get('secs'));
+        secs = Math.min(secs, 59);
+        let totalSeconds = mins * 60 + secs;
+
+        // Timer-Element initial befüllen
+        const timerElement = document.getElementById('timer');
+        if (timerElement) {
+            timerElement.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        } else {
+            console.error("Timer-Element nicht gefunden!");
+        }
+
+        // Timer-Logik
+        let isOvertime = false;
+        const resetBtn = document.getElementById('resetBtn');
+
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        function updateTimer() {
+            if (!isOvertime) {
+                totalSeconds--;
+                if (totalSeconds <= 0) {
+                    totalSeconds = 0;
+                    isOvertime = true;
+                    document.body.classList.add('overtime');
+                }
+            } else {
+                totalSeconds++;
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const absSeconds = Math.abs(totalSeconds);
+            const mins = Math.floor(absSeconds / 60);
+            const secs = absSeconds % 60;
+            if (timerElement) {
+                timerElement.textContent = `${isOvertime ? '-' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+        }
+
+        // Zurück-Button
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                clearInterval(timerInterval);
+                window.location.href = 'index.html';
+            });
+        }
+    </script>
+</body>
+</html>

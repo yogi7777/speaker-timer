@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta name="author" content="yogi7777">
+    <title>Speaker Timer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <h1>Timer Countdown Einstellungen</h1>
+        <div class="time-input">
+          <div class="time-container">
+            <div class="input-group">
+              <input type="number" id="minutes" min="0" value="0" placeholder="Min">
+              <span class="label">min</span>
+            </div>
+            <span class="colon">:</span>
+            <div class="input-group">
+              <input type="number" id="seconds" min="0" max="59" value="0" placeholder="Sec">
+              <span class="label">sec</span>
+            </div>
+          </div>
+        </div>
+        <button id="startBtn">Timer starten</button>
+    </div>
+        <footer style="font-size: 0.8em; text-align: center; padding: 10px;">
+            <br /><br />
+            &copy; 2025 by <a href="https://github.com/yogi7777" target="_blank">yogi7777</a> <a href="https://itcrm.ch" target="_blank">itcrm.ch</a>. Alle Rechte vorbehalten.
+        </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('startBtn');
+            const minutesInput = document.getElementById('minutes');
+            const secondsInput = document.getElementById('seconds');
+
+            if (!startBtn || !minutesInput || !secondsInput) {
+                console.error("Ein oder mehrere Elemente nicht gefunden!");
+                return;
+            }
+
+            // Funktion zur Bereinigung und Validierung der Eingaben
+            function sanitizeInput(value) {
+                const num = parseInt(value, 10);
+                return isNaN(num) || num < 0 ? 0 : num;
+            }
+
+            startBtn.addEventListener('click', function() {
+                // Eingaben bereinigen
+                let mins = sanitizeInput(minutesInput.value);
+                let secs = sanitizeInput(secondsInput.value);
+
+                // Sekunden auf 0-59 begrenzen
+                secs = Math.min(secs, 59);
+
+                // Seitenwechsel
+                const url = `fullscreen.html?mins=${encodeURIComponent(mins)}&secs=${encodeURIComponent(secs)}`;
+                window.location.href = url;
+            });
+
+            // Service Worker Registrierung
+            if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registriert'))
+                    .catch(err => console.error('Fehler bei Service Worker:', err));
+            }
+        });
+    </script>
+</body>
+</html>
