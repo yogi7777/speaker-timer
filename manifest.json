@@ -1,9 +1,9 @@
 {
-    "name": "Speaker Timer by yogi7777",
+    "name": "Speaker Timer",
     "short_name": "Timer",
     "start_url": "/index.html",
     "display": "standalone",
-    "background_color": "#ffffff",
+    "background_color": "#121212",
     "theme_color": "#000000",
     "author": "yogi7777",
     "description": "Copyright © 2025 yogi7777. https://github.com/yogi7777",
