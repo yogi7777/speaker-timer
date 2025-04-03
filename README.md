@@ -7,6 +7,7 @@
 - Set timer in minutes, seconds 
 - Timer at 0:00, color changes to red and timer runs up.
 - CSP, sanitizeInput, encodeURIComponent, DOM, XSS protection built in.
+- silent alarm without sound
 
 
 **Author:** yogi7777
