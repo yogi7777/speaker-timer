@@ -1,6 +1,6 @@
 # Speaker Timer
 ## Ein einfacher Timer für Vorträge. 
-### (Oder andere Anwendungen).
+>(Oder andere Anwendungen).
 
 - Timer in Minuten, Sekunden einstellen 
 - Timer auf 0:00, Farbe wechselt auf rot und Timer läuft aufwärts.
