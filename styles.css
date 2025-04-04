@@ -32,7 +32,6 @@ h1, input, button, span, div {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
 }
@@ -123,9 +122,27 @@ body.overtime {
     display: flex;
     height: 100%;
 }
+/* Vollbild-Button */
+.fullscreen-button {
+    position: fixed;
+    bottom: 20px;
+    left: 80px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.fullscreen-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
 footer {
     clear: both;
     position: relative;
-    height: 200px;
     margin-top: -200px;
+    text-align: center;
 }

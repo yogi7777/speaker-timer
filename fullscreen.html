@@ -11,6 +11,7 @@
 <body class="dark-mode">
     <div id="timer"></div>
     <button id="resetBtn" class="reset-button">Zurück</button>
+    <button id="fullscreenBtn" class="fullscreen-button">⛶</button> <!-- Symbol für Vollbild -->
 
     <script>
         // Sicherer Zugriff auf URL-Parameter
@@ -34,10 +35,39 @@
             console.error("Timer-Element nicht gefunden!");
         }
 
+        // Wake Lock Variablen
+        let wakeLock = null;
+
+        // Funktion zum Anfordern des Wake Locks
+        const requestWakeLock = async () => {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock aktiviert');
+                } else {
+                    console.warn('Wake Lock API wird vom Browser nicht unterstützt');
+                }
+            } catch (err) {
+                console.error(`Wake Lock konnte nicht aktiviert werden: ${err.message}`);
+            }
+        };
+
+        // Funktion zum Freigeben des Wake Locks
+        const releaseWakeLock = async () => {
+            if (wakeLock !== null) {
+                await wakeLock.release();
+                wakeLock = null;
+                console.log('Wake Lock deaktiviert');
+            }
+        };
+
         // Timer-Logik
         let isOvertime = false;
         const resetBtn = document.getElementById('resetBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
 
+        // Wake Lock beim Start des Timers aktivieren
+        requestWakeLock();
         const timerInterval = setInterval(updateTimer, 1000);
 
         function updateTimer() {
@@ -63,13 +93,33 @@
             }
         }
 
-        // Zurück-Button
+        // Zurück-Button: Timer stoppen und Wake Lock freigeben
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
                 clearInterval(timerInterval);
+                releaseWakeLock();
                 window.location.href = 'index.html';
             });
         }
+
+        // Vollbild-Button: Seite in den Vollbildmodus versetzen
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.error(`Fehler beim Aktivieren des Vollbildmodus: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+        }
+
+        // Wake Lock freigeben, wenn die Seite verlassen wird
+        window.addEventListener('unload', () => {
+            releaseWakeLock();
+        });
     </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92ae6fc70d0e677e',t:'MTc0Mzc0NDg2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
