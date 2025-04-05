@@ -71,13 +71,6 @@ h1, input, button, span, div {
     text-align: center;
 }
 
-.colon {
-    font-size: 1.5em;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-}
-
 button {
     background: #444;
     color: white;
