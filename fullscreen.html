@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src 'self' data:;">
     <meta name="author" content="yogi7777">
     <title>Speaker Timer</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.1">
 </head>
 <body class="dark-mode">
     <div id="timer"></div>
-    <button id="resetBtn" class="reset-button">Zurück</button>
+    <button id="resetBtn" class="reset-button">&#8678;</button>
+    <button id="enableAlarmBtn" class="alarm-button">&#9835;</button> <!-- Button für Alarm Interagierung -->
     <button id="fullscreenBtn" class="fullscreen-button">⛶</button> <!-- Symbol für Vollbild -->
+
+    <audio id="alarmSound" src="alarm.wav" preload="auto"></audio>
 
     <script>
         // Sicherer Zugriff auf URL-Parameter
@@ -65,6 +68,10 @@
         let isOvertime = false;
         const resetBtn = document.getElementById('resetBtn');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const alarmSound = document.getElementById('alarmSound');
+
+        // Alarmstatus
+        let withAlarm = false; // Standardmäßig deaktiviert
 
         // Wake Lock beim Start des Timers aktivieren
         requestWakeLock();
@@ -77,6 +84,11 @@
                     totalSeconds = 0;
                     isOvertime = true;
                     document.body.classList.add('overtime');
+
+                    // Alarm abspielen, wenn aktiviert
+                    if (withAlarm) {
+                        playAlarm();
+                    }
                 }
             } else {
                 totalSeconds++;
@@ -91,6 +103,27 @@
             if (timerElement) {
                 timerElement.textContent = `${isOvertime ? '-' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
             }
+        }
+
+        function playAlarm() {
+            if (alarmSound) {
+                try {
+                    alarmSound.currentTime = 0; // Zurücksetzen des Audios
+                    alarmSound.play().catch(err => console.error("Fehler beim Abspielen des Alarms:", err));
+                } catch (err) {
+                    console.error("Fehler beim Abspielen des Alarms:", err);
+                }
+            }
+        }
+
+        // Mit-Ton-Button: Alarm aktivieren
+        const enableAlarmBtn = document.getElementById('enableAlarmBtn');
+        if (enableAlarmBtn) {
+            enableAlarmBtn.addEventListener('click', () => {
+                withAlarm = true; // Alarm aktivieren
+                enableAlarmBtn.disabled = true; // Button deaktivieren, nachdem er geklickt wurde
+                enableAlarmBtn.style.backgroundColor = '#681200'; // Hintergrundfarbe auf Rot ändern
+            });
         }
 
         // Zurück-Button: Timer stoppen und Wake Lock freigeben
@@ -120,6 +153,5 @@
             releaseWakeLock();
         });
     </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92ae6fc70d0e677e',t:'MTc0Mzc0NDg2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

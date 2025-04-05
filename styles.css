@@ -89,7 +89,37 @@ button {
     border: none;
     border-radius: 5px;
     z-index: 1000;
+    font-size: 1.1em;
+}
+.alarm-button {
+    position: fixed;
+    bottom: 20px;
+    right: 100px;
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    z-index: 1000;
     font-size: 1.2em;
+}
+/* Vollbild-Button */
+.fullscreen-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.fullscreen-button:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 /* Overtime (rot) */
@@ -122,24 +152,7 @@ body.overtime {
     display: flex;
     height: 100%;
 }
-/* Vollbild-Button */
-.fullscreen-button {
-    position: fixed;
-    bottom: 20px;
-    left: 80px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    z-index: 1000;
-    font-size: 1em;
-    cursor: pointer;
-}
 
-.fullscreen-button:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
 footer {
     clear: both;
     position: relative;
