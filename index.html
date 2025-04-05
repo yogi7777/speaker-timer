@@ -27,10 +27,10 @@
         </div>
         <button id="startBtn">Timer starten</button>
     </div>
-        <footer>
-            <br /><br />
-            &copy; 2025 by <a href="https://github.com/yogi7777" target="_blank">yogi7777</a> <a href="https://itcrm.ch" target="_blank">itcrm.ch</a>. Alle Rechte vorbehalten.
-        </footer>
+    <footer>
+        <br /><br />
+        &copy; 2025 by <a href="https://github.com/yogi7777" target="_blank">yogi7777</a> <a href="https://itcrm.ch" target="_blank">itcrm.ch</a>. Alle Rechte vorbehalten.
+    </footer>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -43,26 +43,26 @@
                 return;
             }
 
-            // Funktion zur Bereinigung und Validierung der Eingaben
             function sanitizeInput(value) {
                 const num = parseInt(value, 10);
                 return isNaN(num) || num < 0 ? 0 : num;
             }
 
             startBtn.addEventListener('click', function() {
-                // Eingaben bereinigen
                 let mins = sanitizeInput(minutesInput.value);
                 let secs = sanitizeInput(secondsInput.value);
-
-                // Sekunden auf 0-59 begrenzen
                 secs = Math.min(secs, 59);
 
-                // Seitenwechsel
-                const url = `fullscreen.html?mins=${encodeURIComponent(mins)}&secs=${encodeURIComponent(secs)}`;
+                // Startzeitpunkt und Gesamtdauer in localStorage speichern
+                const totalSeconds = mins * 60 + secs;
+                const startTime = Date.now();
+                localStorage.setItem('timerStart', startTime);
+                localStorage.setItem('timerDuration', totalSeconds);
+
+                const url = `fullscreen.html`;
                 window.location.href = url;
             });
 
-            // Service Worker Registrierung
             if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
                 navigator.serviceWorker.register('sw.js')
                     .then(reg => console.log('Service Worker registriert'))

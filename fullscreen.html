@@ -11,71 +11,78 @@
 <body class="dark-mode">
     <div id="timer"></div>
     <button id="resetBtn" class="reset-button">&#8678;</button>
-    <button id="enableAlarmBtn" class="alarm-button">&#9835;</button> <!-- Button für Alarm Interagierung -->
-    <button id="fullscreenBtn" class="fullscreen-button">⛶</button> <!-- Symbol für Vollbild -->
+    <button id="enableAlarmBtn" class="alarm-button">&#9835;</button>
+    <button id="fullscreenBtn" class="fullscreen-button">⛶</button>
 
     <audio id="alarmSound" src="alarm.wav" preload="auto"></audio>
 
     <script>
-        // Sicherer Zugriff auf URL-Parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const sanitizeInput = (value) => {
-            const num = parseInt(value, 10);
-            return isNaN(num) || num < 0 ? 0 : num;
-        };
-
-        // Initiale Werte bereinigen
-        let mins = sanitizeInput(urlParams.get('mins'));
-        let secs = sanitizeInput(urlParams.get('secs'));
-        secs = Math.min(secs, 59);
-        let totalSeconds = mins * 60 + secs;
-
-        // Timer-Element initial befüllen
         const timerElement = document.getElementById('timer');
-        if (timerElement) {
-            timerElement.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        } else {
+        if (!timerElement) {
             console.error("Timer-Element nicht gefunden!");
         }
 
-        // Wake Lock Variablen
         let wakeLock = null;
+        let totalSeconds = 0;
+        let isOvertime = false;
+        let withAlarm = false;
 
-        // Funktion zum Anfordern des Wake Locks
-        const requestWakeLock = async () => {
+        // Daten aus localStorage lesen
+        const startTime = parseInt(localStorage.getItem('timerStart'), 10);
+        const timerDuration = parseInt(localStorage.getItem('timerDuration'), 10);
+
+        if (isNaN(startTime) || isNaN(timerDuration)) {
+            timerElement.textContent = "0:00";
+            console.error("Timer-Daten fehlen oder sind ungültig!");
+        } else {
+            // Verbleibende Zeit berechnen
+            const elapsedMs = Date.now() - startTime;
+            const elapsedSeconds = Math.floor(elapsedMs / 1000);
+            totalSeconds = timerDuration - elapsedSeconds;
+
+            if (totalSeconds <= 0) {
+                isOvertime = true;
+                totalSeconds = Math.abs(totalSeconds);
+                document.body.classList.add('overtime');
+            }
+            updateDisplay();
+            startTimer();
+        }
+
+        async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen');
                     console.log('Wake Lock aktiviert');
-                } else {
-                    console.warn('Wake Lock API wird vom Browser nicht unterstützt');
                 }
             } catch (err) {
                 console.error(`Wake Lock konnte nicht aktiviert werden: ${err.message}`);
             }
-        };
+        }
 
-        // Funktion zum Freigeben des Wake Locks
-        const releaseWakeLock = async () => {
+        async function releaseWakeLock() {
             if (wakeLock !== null) {
                 await wakeLock.release();
                 wakeLock = null;
                 console.log('Wake Lock deaktiviert');
             }
-        };
+        }
 
-        // Timer-Logik
-        let isOvertime = false;
-        const resetBtn = document.getElementById('resetBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const alarmSound = document.getElementById('alarmSound');
+        function startTimer() {
+            requestWakeLock();
+            const timerInterval = setInterval(updateTimer, 1000);
 
-        // Alarmstatus
-        let withAlarm = false; // Standardmäßig deaktiviert
-
-        // Wake Lock beim Start des Timers aktivieren
-        requestWakeLock();
-        const timerInterval = setInterval(updateTimer, 1000);
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    clearInterval(timerInterval);
+                    releaseWakeLock();
+                    localStorage.removeItem('timerStart');
+                    localStorage.removeItem('timerDuration');
+                    window.location.href = 'index.html';
+                });
+            }
+        }
 
         function updateTimer() {
             if (!isOvertime) {
@@ -84,8 +91,6 @@
                     totalSeconds = 0;
                     isOvertime = true;
                     document.body.classList.add('overtime');
-
-                    // Alarm abspielen, wenn aktiviert
                     if (withAlarm) {
                         playAlarm();
                     }
@@ -106,9 +111,10 @@
         }
 
         function playAlarm() {
+            const alarmSound = document.getElementById('alarmSound');
             if (alarmSound) {
                 try {
-                    alarmSound.currentTime = 0; // Zurücksetzen des Audios
+                    alarmSound.currentTime = 0;
                     alarmSound.play().catch(err => console.error("Fehler beim Abspielen des Alarms:", err));
                 } catch (err) {
                     console.error("Fehler beim Abspielen des Alarms:", err);
@@ -116,26 +122,16 @@
             }
         }
 
-        // Mit-Ton-Button: Alarm aktivieren
         const enableAlarmBtn = document.getElementById('enableAlarmBtn');
         if (enableAlarmBtn) {
             enableAlarmBtn.addEventListener('click', () => {
-                withAlarm = true; // Alarm aktivieren
-                enableAlarmBtn.disabled = true; // Button deaktivieren, nachdem er geklickt wurde
-                enableAlarmBtn.style.backgroundColor = '#681200'; // Hintergrundfarbe auf Rot ändern
+                withAlarm = true;
+                enableAlarmBtn.disabled = true;
+                enableAlarmBtn.style.backgroundColor = '#681200';
             });
         }
 
-        // Zurück-Button: Timer stoppen und Wake Lock freigeben
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => {
-                clearInterval(timerInterval);
-                releaseWakeLock();
-                window.location.href = 'index.html';
-            });
-        }
-
-        // Vollbild-Button: Seite in den Vollbildmodus versetzen
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
         if (fullscreenBtn) {
             fullscreenBtn.addEventListener('click', () => {
                 if (!document.fullscreenElement) {
@@ -148,7 +144,6 @@
             });
         }
 
-        // Wake Lock freigeben, wenn die Seite verlassen wird
         window.addEventListener('unload', () => {
             releaseWakeLock();
         });
