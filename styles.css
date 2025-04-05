@@ -154,11 +154,22 @@ body.overtime {
 }
 
 footer {
-    clear: both;
-    position: relative;
-    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    background-color: #121212;
+    color: white;
     text-align: center;
     padding: 20px 0;
+    width: 100%;
+}
+footer a {
+    color: inherit;
+}
+
+footer a:hover, 
+footer a:visited, 
+footer a:active {
+    color: inherit;
 }
 
 /* Responsive Anpassungen */

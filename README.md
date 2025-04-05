@@ -1,8 +1,8 @@
-# Speaker Timer
+# Timer
 **Show Demo at: https://itcrm.ch/timer/**
 
 > A simple timer for presentations. 
-> (Or other things like breaks, exams, etc.).
+> (Or other things like breaks, exams, speaking, etc.).
 
 - Set timer in hours, minutes, seconds.
 - The timer continues to run during the reload

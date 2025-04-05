@@ -1,5 +1,5 @@
 /*
- * Speaker Timer
+ * Timer
  * Autor: yogi7777
  * Copyright © 2025 yogi7777 https://github.com/yogi7777. Alle Rechte vorbehalten.
  */
