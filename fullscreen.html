@@ -10,8 +10,8 @@
 </head>
 <body class="dark-mode">
     <div id="timer"></div>
-    <button id="resetBtn" class="reset-button">&#8678;</button>
-    <button id="enableAlarmBtn" class="alarm-button">&#9835;</button>
+    <button id="resetBtn" class="reset-button">⇦</button>
+    <button id="enableAlarmBtn" class="alarm-button">♫</button>
     <button id="fullscreenBtn" class="fullscreen-button">⛶</button>
 
     <audio id="alarmSound" src="alarm.wav" preload="auto"></audio>
@@ -27,7 +27,6 @@
         let isOvertime = false;
         let withAlarm = false;
 
-        // Daten aus localStorage lesen
         const startTime = parseInt(localStorage.getItem('timerStart'), 10);
         const timerDuration = parseInt(localStorage.getItem('timerDuration'), 10);
 
@@ -35,7 +34,6 @@
             timerElement.textContent = "0:00";
             console.error("Timer-Daten fehlen oder sind ungültig!");
         } else {
-            // Verbleibende Zeit berechnen
             const elapsedMs = Date.now() - startTime;
             const elapsedSeconds = Math.floor(elapsedMs / 1000);
             totalSeconds = timerDuration - elapsedSeconds;
@@ -103,10 +101,17 @@
 
         function updateDisplay() {
             const absSeconds = Math.abs(totalSeconds);
-            const mins = Math.floor(absSeconds / 60);
+            const hours = Math.floor(absSeconds / 3600);
+            const mins = Math.floor((absSeconds % 3600) / 60);
             const secs = absSeconds % 60;
             if (timerElement) {
-                timerElement.textContent = `${isOvertime ? '-' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                if (hours > 0) {
+                    // Stunden anzeigen, wenn vorhanden
+                    timerElement.textContent = `${hours}:${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                } else {
+                    // Nur Minuten und Sekunden, wenn keine Stunden
+                    timerElement.textContent = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                }
             }
         }
 

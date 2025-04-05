@@ -15,6 +15,11 @@
         <div class="time-input">
           <div class="time-container">
             <div class="input-group">
+              <input type="number" id="hours" min="0" value="0" placeholder="Std">
+              <span class="label">std</span>
+            </div>
+            <span class="colon">:</span>
+            <div class="input-group">
               <input type="number" id="minutes" min="0" value="0" placeholder="Min">
               <span class="label">min</span>
             </div>
@@ -29,16 +34,17 @@
     </div>
     <footer>
         <br /><br />
-        &copy; 2025 by <a href="https://github.com/yogi7777" target="_blank">yogi7777</a> <a href="https://itcrm.ch" target="_blank">itcrm.ch</a>. Alle Rechte vorbehalten.
+        © 2025 by <a href="https://github.com/yogi7777" target="_blank">yogi7777</a> <a href="https://itcrm.ch" target="_blank">itcrm.ch</a>. Alle Rechte vorbehalten.
     </footer>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const startBtn = document.getElementById('startBtn');
+            const hoursInput = document.getElementById('hours');
             const minutesInput = document.getElementById('minutes');
             const secondsInput = document.getElementById('seconds');
 
-            if (!startBtn || !minutesInput || !secondsInput) {
+            if (!startBtn || !hoursInput || !minutesInput || !secondsInput) {
                 console.error("Ein oder mehrere Elemente nicht gefunden!");
                 return;
             }
@@ -49,12 +55,15 @@
             }
 
             startBtn.addEventListener('click', function() {
+                let hours = sanitizeInput(hoursInput.value);
                 let mins = sanitizeInput(minutesInput.value);
                 let secs = sanitizeInput(secondsInput.value);
                 secs = Math.min(secs, 59);
 
+                // Gesamtdauer in Sekunden berechnen (Stunden + Minuten + Sekunden)
+                const totalSeconds = (hours * 3600) + (mins * 60) + secs;
+
                 // Startzeitpunkt und Gesamtdauer in localStorage speichern
-                const totalSeconds = mins * 60 + secs;
                 const startTime = Date.now();
                 localStorage.setItem('timerStart', startTime);
                 localStorage.setItem('timerDuration', totalSeconds);
