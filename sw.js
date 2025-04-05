@@ -1,14 +1,15 @@
 /*
- * Speaker Timer Styles
+ * Speaker Timer
  * Autor: yogi7777
  * Copyright © 2025 yogi7777 https://github.com/yogi7777. Alle Rechte vorbehalten.
  */
-const CACHE_NAME = 'timer-v1';
+const CACHE_NAME = 'timer-v1.1';
 const urlsToCache = [
   '/',
   '/index.html',
   '/fullscreen.html',
   '/styles.css',
+  '/alarm.wav',
   '/manifest.json'
 ];
 
